@@ -1,6 +1,6 @@
 package io.hhplus.tdd.point;
 
-import io.hhplus.tdd.point.entity.UserPoint;
+import io.hhplus.tdd.point.dto.UserPoint;
 import io.hhplus.tdd.point.repository.UserPointRepository;
 import io.hhplus.tdd.point.service.PointService;
 import org.junit.jupiter.api.DisplayName;
@@ -19,18 +19,19 @@ class PointServiceTest {
     @InjectMocks
     PointService pointService;
 
+
     @Mock
     UserPointRepository userPointRepository;
 
     @Test
-    @DisplayName("유저의 id값을 입력받으면 userPoint를 반환")
+    @DisplayName("유저의 id를 입력받으면 userPoint를 반환")
     public void viewPointTest(){  //유저의 포인트가 정상적으로 반환이 되는지 확인
         //given
         Long id = 1L;
-        Long amount = 1000L;
+        Long point = 1000L;
         UserPoint userPoint = UserPoint.builder()
                 .id(id)
-                .point(amount)
+                .point(point)
                 .build();
 
         given(userPointRepository.selectById(id)).willReturn(userPoint);
@@ -40,7 +41,30 @@ class PointServiceTest {
         //then
         assertThat(resultUserPoint).isNotNull();
         assertThat(resultUserPoint.id()).isEqualTo(id);
-        assertThat(resultUserPoint.point()).isEqualTo(amount);
+        assertThat(resultUserPoint.point()).isEqualTo(point);
+    }
+
+    @Test
+    @DisplayName("유저의 id, point를 입력받으면 업데이트된 userPoint를 반환")
+    public void chargePointTest(){
+        //given
+        long id = 1L;
+        long point = 1000L;
+        long chargePoint = 1000L;
+
+        UserPoint userPoint = UserPoint.builder()
+                .id(id)
+                .point(point+chargePoint)
+                .build();
+
+        given(userPointRepository.updatePointById(id, chargePoint)).willReturn(userPoint);
+
+        //when
+        UserPoint resultUserPoint = pointService.chargePoint(id, chargePoint);
+
+        //then
+        verify(userPointRepository).updatePointById(id, chargePoint);
+        assertThat(resultUserPoint).isNotNull();
     }
 
 }
