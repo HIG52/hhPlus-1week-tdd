@@ -49,22 +49,33 @@ class PointServiceTest {
     public void chargePointTest(){
         //given
         long id = 1L;
-        long point = 1000L;
+        long currentPoint = 1000L;
         long chargePoint = 1000L;
+        long updatePoint = currentPoint + chargePoint;
 
-        UserPoint userPoint = UserPoint.builder()
+        UserPoint existingUserPoint = UserPoint.builder()
                 .id(id)
-                .point(point+chargePoint)
+                .point(currentPoint)
                 .build();
 
-        given(userPointRepository.updatePointById(id, chargePoint)).willReturn(userPoint);
+        UserPoint updatedUserPoint = UserPoint.builder()
+                .id(id)
+                .point(updatePoint)
+                .build();
+
+
+        given(userPointRepository.selectById(id)).willReturn(existingUserPoint);
+        given(userPointRepository.updatePointById(id, updatePoint)).willReturn(updatedUserPoint);
 
         //when
         UserPoint resultUserPoint = pointService.chargePoint(id, chargePoint);
 
         //then
-        verify(userPointRepository).updatePointById(id, chargePoint);
+        verify(userPointRepository).updatePointById(id, updatePoint);
         assertThat(resultUserPoint).isNotNull();
+        assertThat(resultUserPoint.point()).isEqualTo(updatePoint);
     }
+
+
 
 }
