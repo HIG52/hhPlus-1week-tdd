@@ -23,8 +23,7 @@ public class UserPointRepository {
 
     public UserPoint updatePointById(long id, long point) {
         UserPoint resultUserPoint = userPointTable.insertOrUpdate(id, point);
-        System.out.println("point = " + point);
-        System.out.println("resultUserPoint = " + resultUserPoint.point());
+
         return new UserPoint(resultUserPoint.id(), resultUserPoint.point(), System.currentTimeMillis());
     }
 }
