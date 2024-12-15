@@ -1,7 +1,7 @@
 package io.hhplus.tdd.database;
 
 
-import io.hhplus.tdd.point.entity.PointHistory;
+import io.hhplus.tdd.point.dto.PointHistory;
 import io.hhplus.tdd.point.type.TransactionType;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +18,6 @@ public class PointHistoryTable {
     private long cursor = 1;
 
     public PointHistory insert(long userId, long amount, TransactionType type, long updateMillis) {
-        //test
         throttle(300L);
         PointHistory pointHistory = new PointHistory(cursor++, userId, amount, type, updateMillis);
         table.add(pointHistory);
