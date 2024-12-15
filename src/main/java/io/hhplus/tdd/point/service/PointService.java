@@ -24,4 +24,12 @@ public class PointService {
 
         return userPointRepository.updatePointById(id, updatedPoint);
     }
+
+    public UserPoint usePoint(long id, long point) {
+        long currentPoint = viewPoint(id).point();
+        long usePoint = point;
+        long updatedPoint = currentPoint - usePoint;
+
+        return userPointRepository.updatePointById(id, updatedPoint);
+    }
 }
