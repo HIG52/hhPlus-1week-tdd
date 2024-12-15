@@ -1,7 +1,7 @@
 package io.hhplus.tdd.point.repository;
 
 import io.hhplus.tdd.database.UserPointTable;
-import io.hhplus.tdd.point.entity.UserPoint;
+import io.hhplus.tdd.point.dto.UserPoint;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -18,6 +18,13 @@ public class UserPointRepository {
         long resultId = userPointTable.selectById(id).id();
         long resultPoint = userPointTable.selectById(id).point();
 
-        return UserPoint.findPoint(resultId, resultPoint);
+        return new UserPoint(resultId, resultPoint, System.currentTimeMillis());
+    }
+
+    public UserPoint updatePointById(long id, long point) {
+        UserPoint resultUserPoint = userPointTable.insertOrUpdate(id, point);
+        System.out.println("point = " + point);
+        System.out.println("resultUserPoint = " + resultUserPoint.point());
+        return new UserPoint(resultUserPoint.id(), resultUserPoint.point(), System.currentTimeMillis());
     }
 }

@@ -1,7 +1,7 @@
 package io.hhplus.tdd.point.controller;
 
-import io.hhplus.tdd.point.entity.PointHistory;
-import io.hhplus.tdd.point.entity.UserPoint;
+import io.hhplus.tdd.point.dto.PointHistory;
+import io.hhplus.tdd.point.dto.UserPoint;
 import io.hhplus.tdd.point.service.PointService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,9 +45,9 @@ public class PointController {
     @PatchMapping("{id}/charge")
     public UserPoint charge(
             @PathVariable long id,
-            @RequestBody long amount
+            @RequestBody UserPoint userPoint
     ) {
-        return new UserPoint(0, 0, 0);
+        return pointService.chargePoint(id, userPoint.point());
     }
 
     /**
