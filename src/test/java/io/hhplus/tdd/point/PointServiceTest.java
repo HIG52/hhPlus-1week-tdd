@@ -45,7 +45,7 @@ class PointServiceTest {
     }
 
     @Test
-    @DisplayName("유저의 id, point를 입력받으면 업데이트된 userPoint를 반환")
+    @DisplayName("유저의 id, point를 입력받으면 충전된 userPoint를 반환")
     public void chargePointTest(){
         //given
         long id = 1L;
@@ -76,6 +76,36 @@ class PointServiceTest {
         assertThat(resultUserPoint.point()).isEqualTo(updatePoint);
     }
 
+    @Test
+    @DisplayName("유저의 id, point를 입력받으면 사용된 userPoint를 반환")
+    public void userPointTest(){
+        //given
+        long id = 1L;
+        long currentPoint = 3000L;
+        long usePoint = 1000L;
+        long updatePoint = currentPoint - usePoint;
 
+        UserPoint existingUserPoint = UserPoint.builder()
+                .id(id)
+                .point(currentPoint)
+                .build();
+
+        UserPoint updatedUserPoint = UserPoint.builder()
+                .id(id)
+                .point(updatePoint)
+                .build();
+
+
+        given(userPointRepository.selectById(id)).willReturn(existingUserPoint);
+        given(userPointRepository.updatePointById(id, updatePoint)).willReturn(updatedUserPoint);
+
+        //when
+        UserPoint resultUserPoint = pointService.usePoint(id, usePoint);
+
+        //then
+        verify(userPointRepository).updatePointById(id, updatePoint);
+        assertThat(resultUserPoint).isNotNull();
+        assertThat(resultUserPoint.point()).isEqualTo(updatePoint);
+    }
 
 }
