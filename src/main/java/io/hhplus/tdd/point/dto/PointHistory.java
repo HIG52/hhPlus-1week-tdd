@@ -1,4 +1,4 @@
-package io.hhplus.tdd.point.entity;
+package io.hhplus.tdd.point.dto;
 
 import io.hhplus.tdd.point.type.TransactionType;
 

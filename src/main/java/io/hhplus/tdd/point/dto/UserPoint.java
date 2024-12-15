@@ -1,4 +1,4 @@
-package io.hhplus.tdd.point.entity;
+package io.hhplus.tdd.point.dto;
 
 import lombok.Builder;
 
@@ -11,9 +11,5 @@ public record UserPoint(
 {
     public static UserPoint empty(long id) {
         return new UserPoint(id, 0, System.currentTimeMillis());
-    }
-
-    public static UserPoint findPoint(long id, long amount) {
-        return new UserPoint(id, amount, System.currentTimeMillis());
     }
 }
