@@ -1,2 +1,5 @@
 spring:
   application.name: hhplus-tdd
+  rsocket:
+    server:
+      port: 8080
