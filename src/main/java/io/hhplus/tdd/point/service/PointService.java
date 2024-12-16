@@ -37,6 +37,10 @@ public class PointService {
         long usePoint = point;
         long updatedPoint = currentPoint - usePoint;
 
+        if(updatedPoint < 0){
+            throw new IllegalArgumentException("사용하려는 포인트가 잔고보다 많습니다.");
+        }
+
         insertPointHistory(id, point, TransactionType.USE);
 
         return userPointRepository.updatePointById(id, updatedPoint);
