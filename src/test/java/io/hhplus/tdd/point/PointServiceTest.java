@@ -89,6 +89,57 @@ class PointServiceTest {
     }
 
     @Test
+    @DisplayName("충전포인트가 10,000포인트를 넘을 경우 예외 반환")
+    public void shouldThrowException_WhenChargePointExceedsLimit(){
+        //given
+        long id = 1L;
+        long currentPoint = 1000L;
+        long chargePoint = 12000L;
+
+        UserPoint existingUserPoint = UserPoint.builder()
+                .id(id)
+                .point(currentPoint)
+                .build();
+
+        given(userPointRepository.selectById(id)).willReturn(existingUserPoint);
+
+
+        //when
+        Throwable thrown = catchThrowable(() -> pointService.chargePoint(id, chargePoint));
+
+        //then
+        assertThat(thrown)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("충전 포인트는 10,000이하여야 합니다.");
+    }
+
+    @Test
+    @DisplayName("충전 포인트가 100 미만인 경우 예외를 반환한다.")
+    public void shouldThrowException_WhenChargePointIsLessThanMinimum(){
+        //given
+        long id = 1L;
+        long currentPoint = 1000L;
+        long chargePoint = 50L;
+
+        UserPoint existingUserPoint = UserPoint.builder()
+                .id(id)
+                .point(currentPoint)
+                .build();
+
+        given(userPointRepository.selectById(id)).willReturn(existingUserPoint);
+
+
+        //when
+        Throwable thrown = catchThrowable(() -> pointService.chargePoint(id, chargePoint));
+
+        //then
+        assertThat(thrown)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("충전 포인트는 100이상이여야 합니다.");
+
+    }
+
+    @Test
     @DisplayName("유저의 id, point를 입력받으면 사용된 userPoint를 반환")
     public void usePointTest(){
         //given
