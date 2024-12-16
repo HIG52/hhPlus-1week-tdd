@@ -2,6 +2,7 @@ package io.hhplus.tdd.point.controller;
 
 import io.hhplus.tdd.point.dto.PointHistory;
 import io.hhplus.tdd.point.dto.UserPoint;
+import io.hhplus.tdd.point.service.PointHistoryService;
 import io.hhplus.tdd.point.service.PointService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,9 @@ public class PointController {
 
     @Autowired
     private PointService pointService;
+
+    @Autowired
+    private PointHistoryService pointHistoryService;
 
     /**
      * TODO - 특정 유저의 포인트를 조회하는 기능을 작성해주세요.
@@ -36,7 +40,7 @@ public class PointController {
     public List<PointHistory> history(
             @PathVariable long id
     ) {
-        return List.of();
+        return pointHistoryService.listHistories(id);
     }
 
     /**
