@@ -1,8 +1,11 @@
 package io.hhplus.tdd.point;
 
+import io.hhplus.tdd.point.dto.PointHistory;
 import io.hhplus.tdd.point.dto.UserPoint;
+import io.hhplus.tdd.point.repository.PointHistoryRepository;
 import io.hhplus.tdd.point.repository.UserPointRepository;
 import io.hhplus.tdd.point.service.PointService;
+import io.hhplus.tdd.point.type.TransactionType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,9 +22,11 @@ class PointServiceTest {
     @InjectMocks
     PointService pointService;
 
-
     @Mock
     UserPointRepository userPointRepository;
+
+    @Mock
+    PointHistoryRepository pointHistoryRepository;
 
     @Test
     @DisplayName("유저의 id를 입력받으면 userPoint를 반환")
@@ -63,9 +68,16 @@ class PointServiceTest {
                 .point(updatePoint)
                 .build();
 
+        PointHistory mockPointHistory = PointHistory.builder()
+                .id(1L) // 임의의 값
+                .userId(id)
+                .amount(chargePoint)
+                .type(TransactionType.CHARGE)
+                .build();
 
         given(userPointRepository.selectById(id)).willReturn(existingUserPoint);
         given(userPointRepository.updatePointById(id, updatePoint)).willReturn(updatedUserPoint);
+        given(pointHistoryRepository.insertHistory(id, chargePoint, TransactionType.CHARGE)).willReturn(mockPointHistory);
 
         //when
         UserPoint resultUserPoint = pointService.chargePoint(id, chargePoint);
@@ -95,9 +107,16 @@ class PointServiceTest {
                 .point(updatePoint)
                 .build();
 
+        PointHistory mockPointHistory = PointHistory.builder()
+                .id(1L) // 임의의 값
+                .userId(id)
+                .amount(usePoint)
+                .type(TransactionType.CHARGE)
+                .build();
 
         given(userPointRepository.selectById(id)).willReturn(existingUserPoint);
         given(userPointRepository.updatePointById(id, updatePoint)).willReturn(updatedUserPoint);
+        given(pointHistoryRepository.insertHistory(id, usePoint, TransactionType.USE)).willReturn(mockPointHistory);
 
         //when
         UserPoint resultUserPoint = pointService.usePoint(id, usePoint);
