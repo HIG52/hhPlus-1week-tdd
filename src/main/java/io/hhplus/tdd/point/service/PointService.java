@@ -26,6 +26,8 @@ public class PointService {
         long chargePoint = point;
         long updatedPoint = currentPoint + chargePoint;
 
+        chargePointException(chargePoint);
+
         insertPointHistory(id, point, TransactionType.CHARGE);
 
         return userPointRepository.updatePointById(id, updatedPoint);
@@ -44,6 +46,16 @@ public class PointService {
         insertPointHistory(id, point, TransactionType.USE);
 
         return userPointRepository.updatePointById(id, updatedPoint);
+    }
+
+    private static void chargePointException(long chargePoint) {
+        if (chargePoint > 10000){
+            throw new IllegalArgumentException("충전 포인트는 10,000이하여야 합니다.");
+        }
+
+        if(chargePoint < 100){
+            throw new IllegalArgumentException("충전 포인트는 100이상이여야 합니다.");
+        }
     }
 
     private void insertPointHistory(long id, long point, TransactionType transactionType) {
