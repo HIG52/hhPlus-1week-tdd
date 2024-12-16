@@ -90,7 +90,7 @@ class PointServiceTest {
 
     @Test
     @DisplayName("유저의 id, point를 입력받으면 사용된 userPoint를 반환")
-    public void userPointTest(){
+    public void usePointTest(){
         //given
         long id = 1L;
         long currentPoint = 3000L;
@@ -125,6 +125,30 @@ class PointServiceTest {
         verify(userPointRepository).updatePointById(id, updatePoint);
         assertThat(resultUserPoint).isNotNull();
         assertThat(resultUserPoint.point()).isEqualTo(updatePoint);
+    }
+
+    @Test
+    @DisplayName("포인트 사용시 잔고보다 많은 포인트를 사용할경우 예외 반환")
+    public void usePoint_throwsException_whenPointExceedsBalance(){
+        //given
+        long id = 1L;
+        long currentPoint = 3000L;
+        long usePoint = 5000L;
+
+        UserPoint existingUserPoint = UserPoint.builder()
+                .id(id)
+                .point(currentPoint)
+                .build();
+
+        given(userPointRepository.selectById(id)).willReturn(existingUserPoint);
+
+        //when
+        Throwable thrown = catchThrowable(() -> pointService.usePoint(id, usePoint));
+
+        //then
+        assertThat(thrown)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("사용하려는 포인트가 잔고보다 많습니다.");
     }
 
 }
