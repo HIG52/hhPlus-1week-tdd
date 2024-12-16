@@ -179,6 +179,30 @@ class PointServiceTest {
     }
 
     @Test
+    @DisplayName("포인트 사용 최소값은 100 이상 10,000이하여야 한다.")
+    public void pointUsage_ThrowsException_WhenNotInRange100To10000(){
+        //given
+        long id = 1L;
+        long currentPoint = 3000L;
+        long usePoint = 90L;
+
+        UserPoint existingUserPoint = UserPoint.builder()
+                .id(id)
+                .point(currentPoint)
+                .build();
+
+        given(userPointRepository.selectById(id)).willReturn(existingUserPoint);
+
+        //when
+        Throwable thrown = catchThrowable(() -> pointService.usePoint(id, usePoint));
+
+        //then
+        assertThat(thrown)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("포인트 사용 최소값은 100 이상 10,000이하여야 합니다.");
+    }
+
+    @Test
     @DisplayName("포인트 사용시 잔고보다 많은 포인트를 사용할경우 예외 반환")
     public void usePoint_throwsException_whenPointExceedsBalance(){
         //given
