@@ -5,6 +5,7 @@ import io.hhplus.tdd.point.dto.UserPoint;
 import io.hhplus.tdd.point.repository.PointHistoryRepository;
 import io.hhplus.tdd.point.repository.UserPointRepository;
 import io.hhplus.tdd.point.type.TransactionType;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,10 +51,10 @@ public class PointService {
             long updatedPoint = currentPoint + chargePoint;
 
             chargePointException(chargePoint);
-
+            UserPoint chargedUserPoint = userPointRepository.updatePointById(id, updatedPoint);
             insertPointHistory(id, point, TransactionType.CHARGE);
 
-            return userPointRepository.updatePointById(id, updatedPoint);
+            return chargedUserPoint;
 
         }finally {
             lock.unlock(); //락 해제
