@@ -5,7 +5,6 @@ import io.hhplus.tdd.point.dto.UserPoint;
 import io.hhplus.tdd.point.repository.PointHistoryRepository;
 import io.hhplus.tdd.point.repository.UserPointRepository;
 import io.hhplus.tdd.point.type.TransactionType;
-import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +35,7 @@ public class PointService {
             return userPointRepository.selectById(id);
         }finally {
             lock.unlock(); //락 해제
+            
         }
 
     }
@@ -46,7 +46,8 @@ public class PointService {
         lock.lock(); //락 획득
 
         try {
-            long currentPoint = viewPoint(id).point();
+            //long currentPoint = viewPoint(id).point();
+            long currentPoint = userPointRepository.selectById(id).point(); //불필요한 중첩락
             long chargePoint = point;
             long updatedPoint = currentPoint + chargePoint;
 
@@ -58,6 +59,7 @@ public class PointService {
 
         }finally {
             lock.unlock(); //락 해제
+            
         }
     }
 
@@ -84,6 +86,7 @@ public class PointService {
 
         }finally {
             lock.unlock(); //락 해제
+            
         }
 
     }
@@ -99,6 +102,6 @@ public class PointService {
     }
 
     private void insertPointHistory(long id, long point, TransactionType transactionType) {
-        PointHistory pointHistory = pointHistoryRepository.insertHistory(id, point, transactionType);
+        pointHistoryRepository.insertHistory(id, point, transactionType);
     }
 }
