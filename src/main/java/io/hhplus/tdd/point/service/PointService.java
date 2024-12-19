@@ -1,5 +1,6 @@
 package io.hhplus.tdd.point.service;
 
+import io.hhplus.tdd.point.dto.PointHistory;
 import io.hhplus.tdd.point.dto.UserPoint;
 import io.hhplus.tdd.point.repository.PointHistoryRepository;
 import io.hhplus.tdd.point.repository.UserPointRepository;
@@ -19,6 +20,9 @@ public class PointService {
 
     @Autowired
     private PointHistoryRepository pointHistoryRepository;
+
+    @Autowired
+    private PointHistoryService pointHistoryService;
 
     //각 ID에 대한 락관리
     private final ConcurrentHashMap<Long, Lock> lockMap = new ConcurrentHashMap<>();
@@ -52,7 +56,8 @@ public class PointService {
 
             chargePointException(chargePoint);
             UserPoint chargedUserPoint = userPointRepository.updatePointById(id, updatedPoint);
-            insertPointHistory(id, point, TransactionType.CHARGE);
+
+            PointHistory pointHistory = pointHistoryService.insertPointHistory(id, point, TransactionType.CHARGE);
 
             return chargedUserPoint;
 
@@ -75,7 +80,7 @@ public class PointService {
 
             updatePointException(updatedPoint);
 
-            insertPointHistory(id, point, TransactionType.USE);
+            PointHistory pointHistory = pointHistoryService.insertPointHistory(id, point, TransactionType.USE);
 
             return userPointRepository.updatePointById(id, updatedPoint);
 
@@ -108,7 +113,4 @@ public class PointService {
         }
     }
 
-    private void insertPointHistory(long id, long point, TransactionType transactionType) {
-        pointHistoryRepository.insertHistory(id, point, transactionType);
-    }
 }
