@@ -58,7 +58,7 @@ public class PointService {
             UserPoint chargedUserPoint = userPointRepository.updatePointById(id, updatedPoint);
 
             PointHistory pointHistory = pointHistoryService.insertPointHistory(id, point, TransactionType.CHARGE);
-
+            pointHistoryException(pointHistory);
             return chargedUserPoint;
 
         }finally {
@@ -66,7 +66,6 @@ public class PointService {
             
         }
     }
-
 
     public UserPoint usePoint(long id, long point) {
         Lock lock = getLock(id);
@@ -81,14 +80,20 @@ public class PointService {
             updatePointException(updatedPoint);
 
             PointHistory pointHistory = pointHistoryService.insertPointHistory(id, point, TransactionType.USE);
-
+            pointHistoryException(pointHistory);
             return userPointRepository.updatePointById(id, updatedPoint);
 
         }finally {
             lock.unlock(); //락 해제
-            
+
         }
 
+    }
+
+    private static void pointHistoryException(PointHistory pointHistory) {
+        if(pointHistory == null){
+            throw new IllegalArgumentException("포인트 히스토리 저장에 실패하였습니다.");
+        }
     }
 
     private static void updatePointException(long updatedPoint) {
