@@ -29,11 +29,10 @@ class PointServiceTest {
     PointHistoryRepository pointHistoryRepository;
 
     @Test
-    @DisplayName("유저의 id를 입력받으면 userPoint를 반환")
-    public void viewPointTest(){  //유저의 포인트가 정상적으로 반환이 되는지 확인
+    public void 유저의_id를_입력받으면_userPoint를_반환(){  //유저의 포인트가 정상적으로 반환이 되는지 확인
         //given
-        Long id = 1L;
-        Long point = 1000L;
+        long id = 1L;
+        long point = 1000L;
         UserPoint userPoint = UserPoint.builder()
                 .id(id)
                 .point(point)
@@ -50,8 +49,7 @@ class PointServiceTest {
     }
 
     @Test
-    @DisplayName("유저의 id, point를 입력받으면 충전된 userPoint를 반환")
-    public void chargePointTest(){
+    public void 유저의_id와_point를_입력받으면_충전된_userPoint를_반환(){
         //given
         long id = 1L;
         long currentPoint = 1000L;
@@ -89,8 +87,7 @@ class PointServiceTest {
     }
 
     @Test
-    @DisplayName("충전포인트가 10,000포인트를 넘을 경우 예외 반환")
-    public void shouldThrowException_WhenChargePointExceedsLimit(){
+    public void 충전포인트가_10_000포인트를_넘을_경우_예외_반환(){
         //given
         long id = 1L;
         long currentPoint = 1000L;
@@ -114,8 +111,7 @@ class PointServiceTest {
     }
 
     @Test
-    @DisplayName("충전 포인트가 100 미만인 경우 예외를 반환한다.")
-    public void shouldThrowException_WhenChargePointIsLessThanMinimum(){
+    public void 충전_포인트가_100_미만인_경우_예외를_반환한다(){
         //given
         long id = 1L;
         long currentPoint = 1000L;
@@ -140,8 +136,7 @@ class PointServiceTest {
     }
 
     @Test
-    @DisplayName("유저의 id, point를 입력받으면 사용된 userPoint를 반환")
-    public void usePointTest(){
+    public void 유저의_id와_point를_입력받으면_사용된_userPoint를_반환(){
         //given
         long id = 1L;
         long currentPoint = 3000L;
@@ -179,8 +174,7 @@ class PointServiceTest {
     }
 
     @Test
-    @DisplayName("포인트 사용 최소값은 100 이상 10,000이하여야 한다.")
-    public void pointUsage_ThrowsException_WhenNotInRange100To10000(){
+    public void 포인트_사용_최소값은_100_이상_10_000이하여야_한다(){
         //given
         long id = 1L;
         long currentPoint = 3000L;
@@ -203,8 +197,7 @@ class PointServiceTest {
     }
 
     @Test
-    @DisplayName("포인트 사용시 잔고보다 많은 포인트를 사용할경우 예외 반환")
-    public void usePoint_throwsException_whenPointExceedsBalance(){
+    public void 포인트_사용시_잔고보다_많은_포인트를_사용할경우_예외_반환(){
         //given
         long id = 1L;
         long currentPoint = 3000L;
