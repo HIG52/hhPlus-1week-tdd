@@ -78,7 +78,7 @@ class PointServiceTest {
 
         given(userPointRepository.selectById(id)).willReturn(existingUserPoint);
         given(userPointRepository.updatePointById(id, updatePoint)).willReturn(updatedUserPoint);
-        given(pointHistoryRepository.insertHistory(id, chargePoint, TransactionType.CHARGE)).willReturn(mockPointHistory);
+        given(pointHistoryServiceImpl.insertPointHistory(id, chargePoint, TransactionType.CHARGE)).willReturn(mockPointHistory);
 
         //when
         UserPoint resultUserPoint = pointService.chargePoint(id, chargePoint);
@@ -223,7 +223,7 @@ class PointServiceTest {
 
         given(userPointRepository.selectById(id)).willReturn(existingUserPoint);
         given(userPointRepository.updatePointById(id, updatePoint)).willReturn(updatedUserPoint);
-        given(pointHistoryRepository.insertHistory(id, usePoint, TransactionType.USE)).willReturn(mockPointHistory);
+        given(pointHistoryServiceImpl.insertPointHistory(id, usePoint, TransactionType.USE)).willReturn(mockPointHistory);
 
         //when
         UserPoint resultUserPoint = pointService.usePoint(id, usePoint);
