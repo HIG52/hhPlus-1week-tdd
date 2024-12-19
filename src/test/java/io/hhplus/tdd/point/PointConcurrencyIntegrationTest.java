@@ -1,8 +1,8 @@
 package io.hhplus.tdd.point;
 
+import io.hhplus.tdd.database.UserPointTable;
 import io.hhplus.tdd.point.dto.UserPoint;
 import io.hhplus.tdd.point.service.PointService;
-import io.hhplus.tdd.point.service.TestPointReset;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +29,11 @@ public class PointConcurrencyIntegrationTest {
     private PointService pointService;
 
     @Autowired
-    private TestPointReset testPointReset;
+    private UserPointTable userPointTable;
 
     @BeforeEach
-    void setUp() {
-        testPointReset.setUserPointReset(USER_ID);
+    public void setUp(){
+        userPointTable.insertOrUpdate(USER_ID, 0L);
     }
 
     @Test
@@ -195,7 +195,7 @@ public class PointConcurrencyIntegrationTest {
         assertThat(finalPoint.point()).isEqualTo(4000L);
 
     }
-    
+
     @Test
     public void 유저가_포인트_사용과_충전을_동시에_했을경우_가지고_있는_포인트가_사용포인트보다_적다면_직전까지의_포인트사용을_처리후_IllegalArgumentException을_반환한다() throws InterruptedException {
         // given
