@@ -1,0 +1,19 @@
+### 특정 유저의 포인트를 조회하는 기능
+GET localhost:8080/point/1
+Content-Type: application/json
+
+### 특정 유저의 포인트를 충전하는 기능
+PATCH localhost:8080/point/1/charge
+Content-Type: application/json
+
+{
+  "point": 8000
+}
+
+### 특정 유저의 포인트를 사용하는 기능
+PATCH localhost:8080/point/1/use
+Content-Type: application/json
+
+{
+  "point": 3000
+}
