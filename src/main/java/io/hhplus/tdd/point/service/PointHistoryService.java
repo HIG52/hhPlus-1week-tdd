@@ -1,20 +1,13 @@
 package io.hhplus.tdd.point.service;
 
 import io.hhplus.tdd.point.dto.PointHistory;
-import io.hhplus.tdd.point.repository.PointHistoryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import io.hhplus.tdd.point.type.TransactionType;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Service
-public class PointHistoryService {
+public interface PointHistoryService {
 
-    @Autowired
-    private PointHistoryRepository pointHistoryRepository;
+    List<PointHistory> listHistories(long id);
 
-    public List<PointHistory> listHistories(long id) {
-        return pointHistoryRepository.listHistories(id);
-    }
+    PointHistory insertPointHistory(long id, long point, TransactionType transactionType);
 }
