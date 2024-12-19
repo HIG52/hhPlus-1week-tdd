@@ -78,10 +78,11 @@ public class PointService {
             usePointException(usePoint);
 
             updatePointException(updatedPoint);
-
+            UserPoint resultPoint = userPointRepository.updatePointById(id, updatedPoint);
             PointHistory pointHistory = pointHistoryService.insertPointHistory(id, point, TransactionType.USE);
             pointHistoryException(pointHistory);
-            return userPointRepository.updatePointById(id, updatedPoint);
+
+            return resultPoint;
 
         }finally {
             lock.unlock(); //락 해제
