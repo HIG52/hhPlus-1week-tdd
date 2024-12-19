@@ -1,6 +1,5 @@
 package io.hhplus.tdd.point.service;
 
-import io.hhplus.tdd.point.dto.PointHistory;
 import io.hhplus.tdd.point.dto.UserPoint;
 import io.hhplus.tdd.point.repository.PointHistoryRepository;
 import io.hhplus.tdd.point.repository.UserPointRepository;
@@ -72,13 +71,9 @@ public class PointService {
             long usePoint = point;
             long updatedPoint = currentPoint - usePoint;
 
-            if(usePoint < 100 || usePoint > 10000) {
-                throw  new IllegalArgumentException("포인트 사용 최소값은 100 이상 10,000이하여야 합니다.");
-            }
+            usePointException(usePoint);
 
-            if(updatedPoint < 0){
-                throw new IllegalArgumentException("사용하려는 포인트가 잔고보다 많습니다.");
-            }
+            updatePointException(updatedPoint);
 
             insertPointHistory(id, point, TransactionType.USE);
 
@@ -89,6 +84,18 @@ public class PointService {
             
         }
 
+    }
+
+    private static void updatePointException(long updatedPoint) {
+        if(updatedPoint < 0){
+            throw new IllegalArgumentException("사용하려는 포인트가 잔고보다 많습니다.");
+        }
+    }
+
+    private static void usePointException(long usePoint) {
+        if(usePoint < 100 || usePoint > 10000) {
+            throw  new IllegalArgumentException("포인트 사용 최소값은 100 이상 10,000이하여야 합니다.");
+        }
     }
 
     private static void chargePointException(long chargePoint) {
