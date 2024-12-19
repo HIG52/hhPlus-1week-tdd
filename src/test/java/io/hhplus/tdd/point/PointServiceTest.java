@@ -4,9 +4,9 @@ import io.hhplus.tdd.point.dto.PointHistory;
 import io.hhplus.tdd.point.dto.UserPoint;
 import io.hhplus.tdd.point.repository.PointHistoryRepository;
 import io.hhplus.tdd.point.repository.UserPointRepository;
+import io.hhplus.tdd.point.service.PointHistoryServiceImpl;
 import io.hhplus.tdd.point.service.PointService;
 import io.hhplus.tdd.point.type.TransactionType;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,6 +21,9 @@ class PointServiceTest {
 
     @InjectMocks
     PointService pointService;
+
+    @Mock
+    PointHistoryServiceImpl pointHistoryServiceImpl;
 
     @Mock
     UserPointRepository userPointRepository;
@@ -87,7 +90,65 @@ class PointServiceTest {
     }
 
     @Test
-    public void 충전포인트가_10_000포인트를_넘을_경우_예외_반환(){
+    public void 포인트_충전시_히스토리_저장에_실패한다면_IllegalArgumentException_반환(){
+        //given
+        long id = 1L;
+        long currentPoint = 1000L;
+        long chargePoint = 1000L;
+
+        UserPoint existingUserPoint = UserPoint.builder()
+                .id(id)
+                .point(currentPoint)
+                .build();
+        UserPoint updateUserPoint = UserPoint.builder()
+                .id(id)
+                .point(currentPoint+chargePoint)
+                .build();
+
+        given(userPointRepository.selectById(id)).willReturn(existingUserPoint);
+        given(userPointRepository.updatePointById(id, currentPoint+chargePoint)).willReturn(updateUserPoint);
+        given(pointHistoryServiceImpl.insertPointHistory(id, chargePoint, TransactionType.CHARGE))
+                .willReturn(null);
+        //when
+        Throwable thrown = catchThrowable(() -> pointService.chargePoint(id, chargePoint));
+
+        //then
+        assertThat(thrown)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("포인트 히스토리 저장에 실패하였습니다.");
+    }
+
+    @Test
+    public void 포인트_사용시_히스토리_저장에_실패한다면_IllegalArgumentException_반환(){
+        //given
+        long id = 1L;
+        long currentPoint = 1000L;
+        long usePoint = 500L;
+
+        UserPoint existingUserPoint = UserPoint.builder()
+                .id(id)
+                .point(currentPoint)
+                .build();
+        UserPoint updateUserPoint = UserPoint.builder()
+                .id(id)
+                .point(currentPoint-usePoint)
+                .build();
+
+        given(userPointRepository.selectById(id)).willReturn(existingUserPoint);
+        given(userPointRepository.updatePointById(id, currentPoint-usePoint)).willReturn(updateUserPoint);
+        given(pointHistoryServiceImpl.insertPointHistory(id, usePoint, TransactionType.USE))
+                .willReturn(null);
+        //when
+        Throwable thrown = catchThrowable(() -> pointService.usePoint(id, usePoint));
+
+        //then
+        assertThat(thrown)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("포인트 히스토리 저장에 실패하였습니다.");
+    }
+
+    @Test
+    public void 충전포인트가_10_000포인트를_넘을_경우_IllegalArgumentException_반환(){
         //given
         long id = 1L;
         long currentPoint = 1000L;
@@ -111,7 +172,7 @@ class PointServiceTest {
     }
 
     @Test
-    public void 충전_포인트가_100_미만인_경우_예외를_반환한다(){
+    public void 충전_포인트가_100_미만인_경우_IllegalArgumentException_반환(){
         //given
         long id = 1L;
         long currentPoint = 1000L;
@@ -197,7 +258,7 @@ class PointServiceTest {
     }
 
     @Test
-    public void 포인트_사용시_잔고보다_많은_포인트를_사용할경우_예외_반환(){
+    public void 포인트_사용시_잔고보다_많은_포인트를_사용할경우_IllegalArgumentException_반환(){
         //given
         long id = 1L;
         long currentPoint = 3000L;
